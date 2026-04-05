@@ -6,7 +6,7 @@
         Height="340"
         CanResize="False"
         WindowStartupLocation="CenterScreen"
-        Topmost="True">
+        >
     <StackPanel Margin="16" Spacing="12">
         <TextBlock Text="Gradient Start (transparent)" FontWeight="SemiBold" />
         <Slider Name="StartSlider" Minimum="0" Maximum="1" Value="0"

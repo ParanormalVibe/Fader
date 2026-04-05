@@ -6,7 +6,7 @@
         Height="350"
         CanResize="False"
         WindowStartupLocation="CenterScreen"
-        Topmost="True">
+        >
     <DockPanel Margin="16">
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
                     HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
