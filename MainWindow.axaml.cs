@@ -12,6 +12,7 @@ public partial class MainWindow : Window
     private double _gradientEnd = 1.0;
     private bool _isResizable;
     private bool _isDraggable;
+    private bool _isBackgroundHidden;
     private SettingsWindow? _settingsWindow;
     private ProfilesWindow? _profilesWindow;
     private AppSettings _settings;
@@ -74,19 +75,28 @@ public partial class MainWindow : Window
 
         if (point.Properties.IsRightButtonPressed)
         {
+            var hideItem = new MenuItem
+            {
+                Header = "Hide Background",
+                Icon = _isBackgroundHidden ? new TextBlock { Text = "\u2713" } : null,
+            };
+
             var menu = new ContextMenu
             {
                 Items =
                 {
+                    hideItem,
+                    new Separator(),
                     new MenuItem { Header = "Settings" },
                     new MenuItem { Header = "Manage Profiles" },
                     new MenuItem { Header = "Close" },
                 }
             };
 
-            ((MenuItem)menu.Items[0]!).Click += (_, _) => OpenSettings();
-            ((MenuItem)menu.Items[1]!).Click += (_, _) => OpenProfiles();
-            ((MenuItem)menu.Items[2]!).Click += (_, _) => Close();
+            hideItem.Click += (_, _) => ToggleHideBackground();
+            ((MenuItem)menu.Items[2]!).Click += (_, _) => OpenSettings();
+            ((MenuItem)menu.Items[3]!).Click += (_, _) => OpenProfiles();
+            ((MenuItem)menu.Items[4]!).Click += (_, _) => Close();
 
             menu.Open(GradientPanel);
         }
@@ -222,8 +232,40 @@ public partial class MainWindow : Window
             SystemDecorations = SystemDecorations.None;
     }
 
+    private void ToggleHideBackground()
+    {
+        _isBackgroundHidden = !_isBackgroundHidden;
+        UpdateGradient();
+        UpdateBorder();
+    }
+
+    private void UpdateBorder()
+    {
+        if (_isBackgroundHidden)
+        {
+            GradientPanel.Children.Clear();
+            var border = new Border
+            {
+                BorderBrush = new ImmutableSolidColorBrush(Color.FromArgb(180, 255, 255, 255)),
+                BorderThickness = new Thickness(1),
+                IsHitTestVisible = false,
+            };
+            GradientPanel.Children.Add(border);
+        }
+        else
+        {
+            GradientPanel.Children.Clear();
+        }
+    }
+
     private void UpdateGradient()
     {
+        if (_isBackgroundHidden)
+        {
+            GradientPanel.Background = Brushes.Transparent;
+            return;
+        }
+
         GradientPanel.Background = new ImmutableLinearGradientBrush(
             new[]
             {
