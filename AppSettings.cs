@@ -7,6 +7,9 @@ using System.Text.Json.Serialization;
 
 namespace Fader;
 
+[JsonSerializable(typeof(AppSettings))]
+internal partial class AppSettingsContext : JsonSerializerContext { }
+
 public class AppSettings
 {
     public double WindowX { get; set; } = double.NaN;
@@ -31,7 +34,7 @@ public class AppSettings
             if (File.Exists(SettingsPath))
             {
                 var json = File.ReadAllText(SettingsPath);
-                var settings = JsonSerializer.Deserialize<AppSettings>(json) ?? new();
+                var settings = JsonSerializer.Deserialize(json, AppSettingsContext.Default.AppSettings) ?? new();
                 if (settings.Profiles == null || settings.Profiles.Count == 0)
                     settings.Profiles = new() { new Profile() };
                 return settings;
@@ -46,7 +49,7 @@ public class AppSettings
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(SettingsPath)!);
-            File.WriteAllText(SettingsPath, JsonSerializer.Serialize(this));
+            File.WriteAllText(SettingsPath, JsonSerializer.Serialize(this, AppSettingsContext.Default.AppSettings));
         }
         catch { }
     }

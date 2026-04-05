@@ -186,7 +186,7 @@ public partial class MainWindow : Window
                 UpdateDecorations();
                 _settings.ActiveProfile.Draggable = draggable;
             };
-            _settingsWindow.Show();
+            _settingsWindow.Show(this);
         }
         else
         {
@@ -204,7 +204,7 @@ public partial class MainWindow : Window
                 _settings.ActiveProfileName = name;
                 ApplyProfile(_settings.ActiveProfile);
             };
-            _profilesWindow.Show();
+            _profilesWindow.Show(this);
         }
         else
         {
